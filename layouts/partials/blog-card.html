@@ -1,6 +1,6 @@
 <div class="p-2">
 <a href="{{ .Permalink }}">
-  {{ $image := .Resources.GetMatch .Params.featured_image }}
+  {{ $image := resources.GetMatch .Params.featured_image }}
   {{ $image := $image.Resize "600x" }}
   <div class="relative">
     <img src="{{ $image.RelPermalink }}" alt="{{ .Params.title }}" class="rounded-lg shadow-sm w-full h-52 object-cover" />
