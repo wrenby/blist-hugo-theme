@@ -9,11 +9,11 @@
   <div class="relative">
     <img
       srcset="
-        {{ with $tiny.RelPermalink }} {{.}} 150w{{ end }}
-        {{ with $small.RelPermalink }} {{.}} 300w{{ end }}
-        {{ with $medium.RelPermalink }} {{.}} 600w{{ end }}
-        {{ with $large.RelPermalink }} {{.}} 1000w{{ end }}
-        {{ with $giant.RelPermalink }} {{.}} 1500w{{ end }}"
+        {{- with $tiny.RelPermalink -}} {{.}} 150w{{- end -}}
+        {{- with $small.RelPermalink -}}, {{.}} 300w{{- end -}}
+        {{- with $medium.RelPermalink -}}, {{.}} 600w{{- end -}}
+        {{- with $large.RelPermalink -}}, {{.}} 1000w{{- end -}}
+        {{- with $giant.RelPermalink -}}, {{.}} 1500w{{- end -}}"
       src="{{ $image.RelPermalink }}"
       alt="{{ .Params.title }}"
       class="rounded-lg shadow-sm w-full h-52 object-cover" />
