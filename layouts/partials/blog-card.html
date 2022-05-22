@@ -1,9 +1,22 @@
 <div class="p-2">
 <a href="{{ .Permalink }}">
   {{ $image := resources.GetMatch .Params.featured_image }}
-  {{ $image := $image.Resize "600x" }}
+  {{ $tiny := $image.Resize "150x jpg q90" }}
+  {{ $small := $image.Resize "300x jpg q90" }}
+  {{ $medium := $image.Resize "600x jpg q90" }}
+  {{ $large := $image.Resize "1000x jpg q90" }}
+  {{ $giant := $image.Resize "1500x jpg q90" }}
   <div class="relative">
-    <img src="{{ $image.RelPermalink }}" alt="{{ .Params.title }}" class="rounded-lg shadow-sm w-full h-52 object-cover" />
+    <img
+      srcset="
+        {{ with $tiny.RelPermalink }} {{.}} 150w{{ end }}
+        {{ with $small.RelPermalink }} {{.}} 300w{{ end }}
+        {{ with $medium.RelPermalink }} {{.}} 600w{{ end }}
+        {{ with $large.RelPermalink }} {{.}} 1000w{{ end }}
+        {{ with $giant.RelPermalink }} {{.}} 1500w{{ end }}"
+      src="{{ $image.RelPermalink }}"
+      alt="{{ .Params.title }}"
+      class="rounded-lg shadow-sm w-full h-52 object-cover" />
     <div class="absolute top-4 right-4 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white text-sm px-2 py-0.5">
       {{ partial "date.html" (dict "date" .Date "language" $.Page.Language "format" "short") }}
     </div>
