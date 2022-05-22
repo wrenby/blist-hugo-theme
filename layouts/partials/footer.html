@@ -66,6 +66,10 @@
     toggleDarkMode();
   }
 </script>
+{{ else }}
+<script>
+  document.documentElement.classList.add('dark');
+</script>
 {{ end }}
 
 <script>
