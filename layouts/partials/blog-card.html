@@ -13,7 +13,7 @@
           {{- with $small.RelPermalink -}}, {{.}} 256w{{- end -}}
           {{- with $medium.RelPermalink -}}, {{.}} 512w{{- end -}}
           {{- with $large.RelPermalink -}}, {{.}} 1024w{{- end -}}
-        src="{{ $ medium.RelPermalink }}"
+        src="{{ $medium.RelPermalink }}"
         width="512px"
         alt="{{ .Params.title }}"
         class="rounded-lg shadow-sm w-full h-52 object-cover" />
