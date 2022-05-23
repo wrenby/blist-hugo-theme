@@ -25,17 +25,18 @@
     {{ $image := resources.GetMatch .Params.featured_image }}
     {{ $tiny := $image.Resize "128x jpg q90 Lanczos" }}
     {{ $small := $image.Resize "256x jpg q90 Lanczos" }}
-    {{ $medium := $image.Resize "512x jpg q90 Lanczos" }}
-    {{ $large := $image.Resize "1024x jpg q90 Lanczos" }}
+    {{ $medium := $image.Resize "410x jpg q90 Lanczos" }}
+    {{ $large := $image.Resize "600x jpg q90 Lanczos" }}
     <div class="relative">
       <img
         srcset="
           {{- with $tiny.RelPermalink -}}{{.}} 128w{{- end -}}
           {{- with $small.RelPermalink -}}, {{.}} 256w{{- end -}}
-          {{- with $medium.RelPermalink -}}, {{.}} 512w{{- end -}}
-          {{- with $large.RelPermalink -}}, {{.}} 1024w{{- end -}}"
+          {{- with $medium.RelPermalink -}}, {{.}} 600w{{- end -}}"
+        sizes="(min-width: 1536px) 600px,
+          (max-width: 1536px) and (min-width: 768) 410px,
+          100vw"
         src="{{ $medium.RelPermalink }}"
-        width="512px"
         alt="{{ .Params.title }}"
         class="rounded-lg shadow-sm w-full h-52 object-cover" />
       <div class="absolute top-4 right-4 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white text-sm px-2 py-0.5">
