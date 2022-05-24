@@ -53,3 +53,31 @@ body {
     /* Safari, Android, iOS */ url("/fonts/inter-v3-latin-700.svg#Inter")
       format("svg"); /* Legacy iOS */
 }
+
+.definition {
+    visibility: hidden;
+    width: 20vw;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.term {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted #9ca3af;
+}
+
+.term:hover .definition {
+    visibility: visible;
+    opacity: 1;
+}

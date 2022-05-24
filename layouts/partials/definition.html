@@ -1,0 +1,7 @@
+<span class="term">
+  {{ $term := .Scratch.Get "term" }}
+  {{- safeHTML $term -}}
+  <span class="definition text-sm">
+    {{- index $.Site.Data.definitions (lower (htmlUnescape $term)) | safeHTML -}}
+  </span>
+</span>
