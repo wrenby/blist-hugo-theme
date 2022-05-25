@@ -54,21 +54,29 @@ body {
       format("svg"); /* Legacy iOS */
 }
 
-.definition {
+.definition-inner {
     visibility: hidden;
-    width: 20vw;
+    width: fit-content;
     background-color: #555;
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
+    padding: 5px;
     z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -60px;
     opacity: 0;
     transition: opacity 0.3s;
+}
+
+.definition-outer {
+    visibility: hidden;
+    width: 400px;
+    z-index: 1;
+    position: absolute;
+    margin-left: -200px;
+    left: 50%;
+    bottom: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .term {
@@ -77,7 +85,7 @@ body {
     border-bottom: 1px dotted #9ca3af;
 }
 
-.term:hover .definition {
+.term:hover .definition-inner {
     visibility: visible;
     opacity: 1;
 }
