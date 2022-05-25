@@ -37,5 +37,5 @@
     {{ .Content }}
   </article>
 
-  {{- partial "social.html" . -}}
+  {{- partialCached "social.html" . -}}
 {{ end }}
