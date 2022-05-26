@@ -2,13 +2,25 @@
   {{ $lastmodstr := (partial "date.html" (dict "date" .Lastmod "language" $.Page.Language "format" "long")) }}
   {{ $datestr := (partial "date.html" (dict "date" .Date "language" $.Page.Language "format" "long")) }}
 
-  {{ if .Params.featured_image }}
-    {{ $image := resources.GetMatch .Params._featured_image }}
+  {{ with $image := resources.GetMatch .Params.featured_image }}
     <div class="relative max-w-5xl mx-auto px-4">
       <a href="{{ $image.RelPermalink }}">
-        <img src="{{ $image.RelPermalink }}" class="rounded-lg shadow-sm w-full object-contain" />
-        <div class="absolute top-4 right-8 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5">
-          {{ $datestr }}
+        {{ $small := $image.Resize "512x jpg q90 Lanczos" }}
+        {{ $medium := $image.Resize "768x jpg q90 Lanczos" }}
+        {{ $large := $image.Resize "1024x jpg q90 Lanczos" }}
+        <div class="relative">
+          <img
+            srcset="
+              {{- with $small.RelPermalink -}}, {{.}} 512w{{- end -}}
+              {{- with $medium.RelPermalink -}}, {{.}} 768w{{- end -}}
+              {{- with $large.RelPermalink -}}, {{.}} 1024w{{- end -}}"
+            src="{{ $large.RelPermalink }}"
+            sizes="100vw"
+            alt="{{ .Params.title }}"
+            class="rounded-lg shadow-sm w-full object-contain" />
+            <div class="absolute top-4 right-4 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5">
+              {{ $datestr }}
+            </div>
         </div>
       </a>
     </div>

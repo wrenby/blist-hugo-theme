@@ -1,48 +1,64 @@
 <meta property="og:title" content="{{ .Title }}" />
 <meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{if .IsPage}}{{ .Summary }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end }}" />
-<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+
+{{- if .IsPage -}}
+{{- $gallery := eq .Type "gallery" }}
+<meta property="og:type" content="{{ if $gallery }}object{{ else }}article{{ end }}" />
+{{- else }}
+<meta property="og:type" content="website" />
+{{- end }}
 <meta property="og:url" content="{{ .Permalink }}" />
 
 
-{{ with $image := resources.GetMatch .Params.featured_image -}}
+{{- with $image := resources.GetMatch .Params.featured_image -}}
 {{- $width := math.Min 1200 $image.Width -}}
 {{- $height := div $width 1.91 | math.Round | int}}
 {{- with $anchor := .Params.image_anchor -}}
-{{- $fill_params := printf "%vx%v %v jpg q90 Lanczos" $width $height $anchor -}}
-{{- $image = $image.Fill $fill_params -}}
+{{- $image = $image.Fill (printf "%vx%v %v jpg q90 Lanczos" $width $height $anchor) -}}
 {{- else -}}
-{{- $fill_params := printf "%vx%v jpg q90 Lanczos" $width $height -}}
-{{- $image = $image.Fill $fill_params -}}
-{{- end -}}
+{{- $image = $image.Fill (printf "%vx%v jpg q90 Lanczos" $width $height) -}}
+{{- end }}
 <meta property="og:image" content="{{ $image.Permalink }}" />
-{{ else -}}
+{{- else }}
 {{- with $.Params.images -}}
 {{- range first 6 . }}<meta property="og:image" content="{{ . | absURL }}" />{{ end -}}
 {{- else -}}
 {{- $images := $.Resources.ByType "image" -}}
 {{- $featured := $images.GetMatch "*feature*" -}}
 {{- if not $featured }}{{ $featured = $images.GetMatch "{*cover*,*thumbnail*}" }}{{ end -}}
-{{- with $featured -}}
+{{- with $featured }}
 <meta property="og:image" content="{{ $featured.Permalink }}"/>
-{{ else -}}
+{{- else -}}
 {{- with $.Site.Params.images }}<meta property="og:image" content="{{ index . 0 | absURL }}"/>{{ end -}}
 {{- end -}} {{/* with $featured */}}
 {{- end -}} {{/* with $.Params.images */}}
 {{- end -}} {{/* with $image := resources.GetMatch .Params.featured_image */}}
 
-{{- if .IsPage }}
-{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+{{- if .IsPage -}}
+{{- $iso8601 := "2006-01-02T15:04:05-07:00" }}
 <meta property="article:section" content="{{ .Section }}" />
-{{ with .PublishDate }}<meta property="article:published_time" {{ .Format $iso8601 | printf "content=%q" | safeHTMLAttr }} />{{ end }}
-{{ with .Lastmod }}<meta property="article:modified_time" {{ .Format $iso8601 | printf "content=%q" | safeHTMLAttr }} />{{ end }}
+{{- with .PublishDate }}
+<meta property="article:published_time" {{ .Format $iso8601 | printf "content=%q" | safeHTMLAttr }} />
+{{- end -}}
+{{- with .Lastmod }}
+<meta property="article:modified_time" {{ .Format $iso8601 | printf "content=%q" | safeHTMLAttr }} />
+{{- end -}}
 {{- end -}}
 
-{{- with .Params.audio }}<meta property="og:audio" content="{{ . }}" />{{ end }}
-{{- with .Params.locale }}<meta property="og:locale" content="{{ . }}" />{{ end }}
-{{- with .Site.Params.title }}<meta property="og:site_name" content="{{ . }}" />{{ end }}
-{{- with .Params.videos }}{{- range . }}
+{{- with .Params.audio }}
+<meta property="og:audio" content="{{ . }}" />
+{{- end -}}
+{{- with .Params.locale }}
+<meta property="og:locale" content="{{ . }}" />
+{{- end -}}
+{{- with $.Site.Title }}
+<meta property="og:site_name" content="{{ . }}" />
+{{- end -}}
+{{- with .Params.videos -}}
+{{- range . }}
 <meta property="og:video" content="{{ . | absURL }}" />
-{{ end }}{{ end }}
+{{- end -}}
+{{- end -}}
 
 {{- /* If it is part of a series, link to related articles */}}
 {{- $permalink := .Permalink }}
