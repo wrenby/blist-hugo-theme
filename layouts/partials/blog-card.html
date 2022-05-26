@@ -23,8 +23,8 @@
         {{ partial "date.html" (dict "date" .Date "language" $.Page.Language "format" "short") }}
       </div>
     </div>
-  {{ else if .Params.image }}
-    {{ $image := resources.GetMatch .Params.image }}
+  {{ else if .Params.featured_image }}
+    {{ $image := resources.GetMatch .Params.featured_image }}
     {{ $tiny := $image.Resize "128x jpg q90 Lanczos" }}
     {{ $small := $image.Resize "256x jpg q90 Lanczos" }}
     {{ $medium := $image.Resize "410x jpg q90 Lanczos" }}

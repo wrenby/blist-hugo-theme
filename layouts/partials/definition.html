@@ -1,20 +1,20 @@
-{{ if .Scratch.Get "inner" }}
+{{- $lookup := lower (htmlUnescape .term) -}}
+{{- if .inner -}}
 <span class="term">
-  {{- .Scratch.Get "inner" | safeHTML -}}
-  <div class="definition-outer">
-    <div class="definition-inner text-sm">
-      {{- index $.Site.Data.definitions (lower (htmlUnescape (.Scratch.Get "term"))) | safeHTML -}}
-    </div>
-  </div>
+{{- .inner -}}
+<span class="definition-outer">
+<span class="definition-inner text-sm">
+{{- index .global.Site.Data.definitions $lookup -}}
 </span>
-{{ else }}
+</span>
+</span>
+{{- else -}}
 <span class="term">
-  {{- $term := .Scratch.Get "term" -}}
-  {{- safeHTML $term -}}
-  <div class="definition-outer">
-    <div class="definition-inner text-sm">
-      {{- index $.Site.Data.definitions (lower (htmlUnescape $term)) | safeHTML -}}
-    </div>
-  </div>
+{{- .term -}}
+<span class="definition-outer">
+<span class="definition-inner text-sm">
+{{- index .global.Site.Data.definitions $lookup -}}
 </span>
-{{ end }}
+</span>
+</span>
+{{- end -}}

@@ -1,0 +1,38 @@
+{{- with $image := resources.GetMatch .Params.featured_image -}}
+<meta name="twitter:card" content="summary_large_image"/>
+{{ $width := math.Min 1200 $image.Width -}}
+{{- $height := div $width 1.91 | math.Round | int}}
+{{- with $anchor := .Params.image_anchor -}}
+{{- $fill_params := printf "%vx%v %v jpg q90 Lanczos" $width $height $anchor -}}
+{{- $image = $image.Fill $fill_params -}}
+{{- else -}}
+{{- $fill_params := printf "%vx%v jpg q90 Lanczos" $width $height -}}
+{{- $image = $image.Fill $fill_params -}}
+{{- end -}}
+<meta name="twitter:image" content="{{ $image.Permalink }}" />
+{{ else -}}
+{{- with $.Params.images -}}
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="{{ index . 0 | absURL }}"/>
+{{ else -}}
+{{- $images := $.Resources.ByType "image" -}}
+{{- $featured := $images.GetMatch "*feature*" -}}
+{{- if not $featured }}{{ $featured = $images.GetMatch "{*cover*,*thumbnail*}" }}{{ end -}}
+{{- with $featured -}}
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="{{ $featured.Permalink }}"/>
+{{- else -}}
+{{- with $.Site.Params.images -}}
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="{{ index . 0 | absURL }}"/>
+{{ else -}}
+<meta name="twitter:card" content="summary"/>
+{{- end -}}
+{{- end -}}
+{{- end }}
+<meta name="twitter:title" content="{{ .Title }}"/>
+<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{if .IsPage}}{{ .Summary }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end -}}"/>
+{{ with .Site.Social.twitter -}}
+<meta name="twitter:site" content="@{{ . }}"/>
+{{ end -}}
+{{- end -}}

@@ -1,5 +1,0 @@
-{{ if .Inner }}
-  {{ .Scratch.Set "inner" .Inner }}
-{{ end }}
-{{ .Scratch.Set "term" (index .Params 0) }}
-{{ partial "definition.html" . }}
