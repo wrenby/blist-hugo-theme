@@ -33,6 +33,33 @@
         </a>
       </li>
       {{ end }}
+      {{ with .Site.Params.homepage.social.cloudynights }}
+      <li>
+        <a
+          href="{{.}}"
+          target="_blank"
+          rel="noopener"
+          aria-label="CloudyNights"
+          class="p-2 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+          <path d="M 9.7778974,6.1605448 C -2.0039395,12.141033 3.4064381,31.317364 17.415682,18.663491 7.1387584,20.533384 5.4166509,15.722366 9.7778974,6.1605448 Z" />
+          <path d="M 11.417523,16.869913 V 4.6323893 h 3.597619 L 18.90982,11.299605 V 3.7743012 L 18.03704,2.7455914 18.061263,2.7093063 21.3853,3.7743012 V 16.869913 H 18.282751 L 14.355065,9.5500391 v 7.3198739 z" />
+          <path d="M 4.1599927,7.5757126 3.5196516,5.4392716 1.3966783,4.7555874 3.23068,3.4863874 3.224855,1.2560535 4.9986698,2.6080872 7.1180467,1.9133488 6.3803271,4.0181501 7.69599,5.8191123 5.4662343,5.7679149 Z" />
+      </svg>
+        </a>
+      </li>
+      {{ end }}
       {{ with .Site.Params.homepage.social.linkedin }}
       <li>
         <a
