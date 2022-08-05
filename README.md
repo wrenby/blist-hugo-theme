@@ -104,7 +104,7 @@ Menu in Blist theme is pre-set to have all section names. You can include custom
 
 ### Customize Ascent Color
 
-Use `[params.ascentColor]` to change the default `pink` color to any supported color from the [list of default colors](https://tailwindcss.com/docs/customizing-colors) from Tailwind CSS.
+Use `[params.accentColor]` to change the default `pink` color to any supported color from the [list of default colors](https://tailwindcss.com/docs/customizing-colors) from Tailwind CSS.
 
 Some example values: bg-blue-200, bg-yellow-300
 

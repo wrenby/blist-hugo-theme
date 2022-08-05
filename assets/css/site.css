@@ -69,18 +69,19 @@ body {
 
 .definition-outer {
     visibility: hidden;
-    width: 400px;
+    width: min(400px, 100vw);
     z-index: 1;
     position: absolute;
-    margin-left: -200px;
-    left: 50%;
-    bottom: 100%;
+    /* margin-left: -min(200px, 50vw); */
+    /* left: 50%; */
+    /* bottom: 100%; */
+    top: -999px;
+    left: -999px;
     display: flex;
     justify-content: center;
 }
 
 .term {
-    position: relative;
     display: inline-block;
     border-bottom: 1px dotted #9ca3af;
 }

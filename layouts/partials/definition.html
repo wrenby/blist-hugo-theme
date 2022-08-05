@@ -1,20 +1,25 @@
 {{- $lookup := lower (htmlUnescape .term) -}}
+{{- $defn := index .global.Site.Data.definitions $lookup | safeHTML -}}
+{{- if $defn -}}
 {{- if .inner -}}
-<span class="term">
+<span class="term" onmouseover="snap_tooltip(this)" onresize="snap_tooltip(this)">
 {{- .inner -}}
 <span class="definition-outer">
 <span class="definition-inner text-sm">
-{{- index .global.Site.Data.definitions $lookup -}}
+{{- $defn -}}
 </span>
 </span>
 </span>
 {{- else -}}
-<span class="term">
+<span class="term" onmouseover="snap_tooltip(this)" onresize="snap_tooltip(this)">
 {{- .term -}}
 <span class="definition-outer">
 <span class="definition-inner text-sm">
-{{- index .global.Site.Data.definitions $lookup -}}
+{{- $defn -}}
 </span>
 </span>
 </span>
+{{- end -}}
+{{- else -}}
+{{- errorf "Term <%v> not found in dictionary" $lookup -}}
 {{- end -}}

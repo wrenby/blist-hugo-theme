@@ -4,8 +4,27 @@
 
   <link rel="icon" href="{{ if (isset .Site.Params "favicon") }}{{ .Site.Params.favicon }}{{ else }}/favicon.ico{{ end }}">
 
+  <script>
+    function snap_tooltip(term_obj) {
+      var tooltip = term_obj.firstElementChild;
+      var obj_rect = term_obj.getBoundingClientRect();
+      var tooltip_rect = tooltip.getBoundingClientRect();
+
+      var goalX = obj_rect.left + obj_rect.width/2 - tooltip_rect.width/2;
+      var goalY = obj_rect.top - tooltip_rect.height;
+      var vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+
+      goalX = Math.min(vw - tooltip_rect.width, Math.max(goalX, 0));
+      if (goalY < 0)
+        goalY = obj_rect.bottom;
+
+      tooltip.style.top = (goalY + window.pageYOffset) + "px";
+      tooltip.style.left = (goalX + window.pageXOffset) + "px";
+    }
+  </script>
+
   <title>
-    {{ block "title" . }} {{- .Title }} - {{ .Site.Title -}} {{ end }}
+    {{ block "title" . }} {{- if .IsHome -}} Home -{{- else -}} {{- .Title }} -{{- end }} {{ .Site.Title -}} {{ end }}
   </title>
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{if .IsPage}}{{ .Summary }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end -}}" />
   {{- if .Keywords }}
@@ -50,6 +69,7 @@
       crossorigin="anonymous"
       onload="renderMathInElement(document.body);"
     ></script>
+
   {{ end }}
 
   {{ range .AlternativeOutputFormats -}}

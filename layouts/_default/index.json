@@ -1,3 +1,4 @@
+{{- $.Scratch.Set "output-format" "rss" -}}
 {{- $.Scratch.Add "index" slice -}}
 {{- range .Site.RegularPages -}}
     {{- $.Scratch.Add "index" (dict "title" .Title "tags" .Params.tags "date" .Params.Lastmod "categories" .Params.categories "contents" .Summary "permalink" .Permalink) -}}
