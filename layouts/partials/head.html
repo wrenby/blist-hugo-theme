@@ -5,14 +5,43 @@
   <link rel="icon" href="{{ if (isset .Site.Params "favicon") }}{{ .Site.Params.favicon }}{{ else }}/favicon.ico{{ end }}">
 
   <script>
-    function snap_tooltip(term_obj) {
-      var tooltip = term_obj.firstElementChild;
-      var obj_rect = term_obj.getBoundingClientRect();
-      var tooltip_rect = tooltip.getBoundingClientRect();
+    const definitions = {{ .Site.Data.definitions }};
+
+    var tooltip_count = 0;
+
+    function create_tooltip(term_elem) {
+      const term = term_elem.getAttribute("data-term");
+      const defn = definitions[term];
+      const tooltip_id = `tooltip-${++tooltip_count}`;
+
+      term.setAttribute("aria-describedby", tooltip_id);
+      term.addEventListener("mouseover", snap_tooltip);
+      term.addEventListener("resize", snap_tooltip);
+
+      var outer = document.createElement("span");
+      outer.setAttribute("class", "definition-outer");
+      outer.setAttribute("role", "tooltip");
+      outer.setAttribute("id", tooltip_id);
+
+      var inner = document.createElement("span");
+      inner.setAttribute("class", "definition-inner");
+      inner.setAttribute("id", tooltip_id);
+      inner.innerHTML = `fuck ${defn}`;
+
+      outer.appendChild(inner);
+      term_elem.appendChild(outer);
+    }
+
+    function snap_tooltip(ev) {
+      var term_elem = ev.target;
+      console.debug(ev);
+      var tooltip = term_elem.firstElementChild;
+      const obj_rect = term_elem.getBoundingClientRect();
+      const tooltip_rect = tooltip.getBoundingClientRect();
 
       var goalX = obj_rect.left + obj_rect.width/2 - tooltip_rect.width/2;
       var goalY = obj_rect.top - tooltip_rect.height;
-      var vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
       goalX = Math.min(vw - tooltip_rect.width, Math.max(goalX, 0));
       if (goalY < 0)
@@ -21,6 +50,14 @@
       tooltip.style.top = (goalY + window.pageYOffset) + "px";
       tooltip.style.left = (goalX + window.pageXOffset) + "px";
     }
+
+    document.addEventListener("load", function() {
+      var terms = document.getElementsByClassName("term");
+
+      for (t in terms) {
+        create_tooltip(t);
+      }
+    });
   </script>
 
   <title>
