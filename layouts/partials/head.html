@@ -7,40 +7,37 @@
   <script>
     const definitions = {{ .Site.Data.definitions }};
 
-    var tooltip_count = 0;
-
     function create_tooltip(term_elem) {
       const term = term_elem.getAttribute("data-term");
       const defn = definitions[term];
-      const tooltip_id = `tooltip-${++tooltip_count}`;
+      const tooltip_id = `tooltip-${term}`;
 
-      term.setAttribute("aria-describedby", tooltip_id);
-      term.addEventListener("mouseover", snap_tooltip);
-      term.addEventListener("resize", snap_tooltip);
-
-      var outer = document.createElement("span");
+      let outer = document.createElement("span");
       outer.setAttribute("class", "definition-outer");
       outer.setAttribute("role", "tooltip");
       outer.setAttribute("id", tooltip_id);
 
-      var inner = document.createElement("span");
+      let inner = document.createElement("span");
       inner.setAttribute("class", "definition-inner");
       inner.setAttribute("id", tooltip_id);
-      inner.innerHTML = `fuck ${defn}`;
+      inner.innerHTML = defn;
 
       outer.appendChild(inner);
       term_elem.appendChild(outer);
+
+      term_elem.setAttribute("aria-describedby", tooltip_id);
+      term_elem.addEventListener("mouseover", snap_tooltip);
+      term_elem.addEventListener("resize", snap_tooltip);
     }
 
     function snap_tooltip(ev) {
-      var term_elem = ev.target;
-      console.debug(ev);
-      var tooltip = term_elem.firstElementChild;
+      let term_elem = ev.target;
+      let tooltip = term_elem.firstElementChild;
       const obj_rect = term_elem.getBoundingClientRect();
       const tooltip_rect = tooltip.getBoundingClientRect();
 
-      var goalX = obj_rect.left + obj_rect.width/2 - tooltip_rect.width/2;
-      var goalY = obj_rect.top - tooltip_rect.height;
+      let goalX = obj_rect.left + obj_rect.width/2 - tooltip_rect.width/2;
+      let goalY = obj_rect.top - tooltip_rect.height;
       const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
       goalX = Math.min(vw - tooltip_rect.width, Math.max(goalX, 0));
@@ -51,10 +48,9 @@
       tooltip.style.left = (goalX + window.pageXOffset) + "px";
     }
 
-    document.addEventListener("load", function() {
-      var terms = document.getElementsByClassName("term");
-
-      for (t in terms) {
+    window.addEventListener("load", function() {
+      let terms = document.getElementsByClassName("term");
+      for (t of terms) {
         create_tooltip(t);
       }
     });
