@@ -16,7 +16,7 @@
               {{- with $large.RelPermalink -}}, {{.}} 1024w{{- end -}}"
             src="{{ $large.RelPermalink }}"
             sizes="100vw"
-            alt="{{ .Params.title }}"
+            alt="{{ $.Params.title }}"
             class="rounded-lg shadow-sm w-full object-contain"
             id="featured_image" />
           <div class="absolute text-xl prose-dark" id="clickme">
@@ -33,8 +33,13 @@
             </svg>
             Click for full-resolution image
           </div>
-          <div class="absolute top-4 right-4 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5">
+          <div id="datestr" class="absolute top-4 right-4 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5">
             📷 {{ $datestr }}
+          </div>
+          <div class="absolute" id="annotations-div">
+            {{- $json_file := relURL (printf "annotations/%s.json" $.File.BaseFileName) -}}
+            <canvas id="annotations" role="presentation" data-json="{{ $json_file }}" data-width = "{{ $image.Width }}" data-height="{{ $image.Height }}"></canvas>
+            <div id="annotations-tooltip" class="absolute bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5 rounded-md"></div>
           </div>
         </div>
       </a>
@@ -69,7 +74,7 @@
       {{- end }}
       {{ if .Params.rot }}
         <div class="text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block icon icon-tabler icon-tabler-rotate-clockwise-2" width="16" height="16" viewBox="0 1 24 25" stroke-width="2.4" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block icon icon-tabler icon-tabler-rotate-clockwise-2" width="16" height="16" viewBox="-1 1 23 25" stroke-width="2.4" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
             <path d="M9 4.55a8 8 0 0 1 6 14.9m0 -4.45v5h5"></path>
             <line x1="5.63" y1="7.16" x2="5.63" y2="7.17"></line>
@@ -79,6 +84,15 @@
             <line x1="11" y1="19.94" x2="11" y2="19.95"></line>
          </svg>
          Rotation: {{ .Params.rot }} E of N
+        </div>
+      {{- end -}}
+      {{ if .Params.moon }}
+        <div class="text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block icon icon-tabler icon-tabler-moon" width="16" height="16" viewBox="-1 1 23 25" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+         </svg>
+         Moon: {{ .Params.moon }}
         </div>
       {{- end -}}
       {{/*<div class="text-center">
@@ -98,8 +112,8 @@
 
   <script>
     // placing this in the bottom means these elements have both been loaded into the dom by now
-    let img = document.getElementById("featured_image");
-    let clickme = document.getElementById("clickme");
+    const img = document.getElementById("featured_image");
+    const clickme = document.getElementById("clickme");
     if (img && clickme) {
       // ordering these this way means it might trigger twice in quick succession, but that has no effect
       // ordering it the other way means there's a chance of losing the event due to toc-tou
@@ -109,6 +123,139 @@
       if (img.complete) {
         clickme.style.animationPlayState = "running";
       }
+    }
+
+    const tooltip = document.getElementById("annotations-tooltip");
+    const canvas = document.getElementById("annotations");
+    const json_url = canvas.getAttribute("data-json");
+    const orig_width = canvas.getAttribute("data-width");
+    const orig_height = canvas.getAttribute("data-height");
+    let scale = canvas.parentElement.offsetWidth / orig_width;
+
+    if (json_url && canvas.getContext) {
+      const ctx = canvas.getContext("2d");
+      fetch(json_url)
+        .then(response => response.json())
+        .then(json => {
+          function draw(ev) {
+            // updating the canvas width and height also clears the contents of the canvas
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+            scale = canvas.width / orig_width;
+
+            let highlight_index = -1;
+            let smallest_annotation_radius = 999999999999;
+            let smallest_distance_squared = 999999999999;
+
+            if (ev) {
+              for (const [i, a] of json["annotations"].entries()) {
+                if (a["type"] == "star") {
+                  // pixel x,y
+                  distance_squared = Math.pow(a["pixelx"] * scale - ev.layerX, 2) + Math.pow(a["pixely"] * scale - ev.layerY, 2);
+                  const scaled_radius = 9;
+                  if (distance_squared <= scaled_radius * scaled_radius && scaled_radius <= smallest_annotation_radius && distance_squared < smallest_distance_squared) {
+                    smallest_distance_squared = distance_squared;
+                    smallest_annotation_radius = scaled_radius;
+                    highlight_index = i;
+                  }
+                } else if (a["type"] == "ngc") {
+                  // pixel x,y and radius
+                  distance_squared = Math.pow(a["pixelx"] * scale - ev.layerX, 2) + Math.pow(a["pixely"] * scale - ev.layerY, 2);
+                  const scaled_radius = a["radius"] * scale;
+                  if (distance_squared < scaled_radius * scaled_radius && scaled_radius < smallest_annotation_radius) {
+                    smallest_distance_squared = distance_squared;
+                    smallest_annotation_radius = scaled_radius;
+                    highlight_index = i;
+                  } else if (distance_squared == scaled_radius * scaled_radius  && scaled_radius == smallest_annotation_radius && distance_squared < smallest_distance_squared) {
+                    smallest_distance_squared = distance_squared;
+                    smallest_annotation_radius = scaled_radius;
+                    highlight_index = i;
+                  }
+                }
+              }
+            }
+
+            let highlight = null;
+            for (const [i, a] of json["annotations"].entries()) {
+              if (i == highlight_index) {
+                highlight = a;
+                continue;
+              }
+              if (a["type"] == "star") {
+                // pixel x,y
+                const scaled_x = a["pixelx"] * scale;
+                const scaled_y = a["pixely"] * scale;
+                const scaled_offset = 20;
+                const scaled_offset2 = 7.5;
+
+                ctx.beginPath();
+                ctx.moveTo(scaled_x - scaled_offset, scaled_y);
+                ctx.lineTo(scaled_x - scaled_offset2, scaled_y);
+                ctx.moveTo(scaled_x + scaled_offset, scaled_y);
+                ctx.lineTo(scaled_x + scaled_offset2, scaled_y);
+                ctx.moveTo(scaled_x, scaled_y - scaled_offset);
+                ctx.lineTo(scaled_x, scaled_y - scaled_offset2);
+                ctx.moveTo(scaled_x, scaled_y + scaled_offset);
+                ctx.lineTo(scaled_x, scaled_y + scaled_offset2);
+                ctx.strokeStyle = "rgb(50, 255, 50, 1)"
+                ctx.lineWidth = 1.25;
+                ctx.stroke();
+              } else if (a["type"] == "ngc") {
+                // pixel x,y and radius
+                ctx.beginPath();
+                ctx.arc(a["pixelx"] * scale, a["pixely"] * scale, a["radius"] * scale, 0, 2*Math.PI);
+                ctx.strokeStyle = "rgb(150, 150, 150, 1)"
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+              }
+            }
+
+            if (highlight) {
+              const scaled_x = highlight["pixelx"] * scale;
+              const scaled_y = highlight["pixely"] * scale;
+              if (highlight["type"] == "star") {
+                // pixel x,y
+                const scaled_offset = 25;
+                const scaled_offset2 = 7.5;
+
+                ctx.beginPath();
+                ctx.moveTo(scaled_x - scaled_offset, scaled_y);
+                ctx.lineTo(scaled_x - scaled_offset2, scaled_y);
+                ctx.moveTo(scaled_x + scaled_offset, scaled_y);
+                ctx.lineTo(scaled_x + scaled_offset2, scaled_y);
+                ctx.moveTo(scaled_x, scaled_y - scaled_offset);
+                ctx.lineTo(scaled_x, scaled_y - scaled_offset2);
+                ctx.moveTo(scaled_x, scaled_y + scaled_offset);
+                ctx.lineTo(scaled_x, scaled_y + scaled_offset2);
+                ctx.strokeStyle = "rgb(30, 255, 30, 1)"
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                tooltip.style.top = scaled_y + "px";
+              } else if (highlight["type"] == "ngc") {
+                // pixel x,y and radius
+                const scaled_radius = highlight["radius"] * scale
+                ctx.beginPath();
+                ctx.arc(scaled_x, scaled_y, scaled_radius, 0, 2*Math.PI);
+                ctx.strokeStyle = "rgb(200, 200, 200, 1)"
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // TODO: keep tooltip inside of the canvas
+                tooltip.style.top = Math.min(scaled_y + scaled_radius / 3, canvas.height) + "px";
+              }
+
+              tooltip.innerText = highlight["names"].join(" / ");
+              tooltip.style.left = scaled_x + "px"
+              tooltip.style.visibility = "visible";
+            } else {
+              tooltip.style.visibility = "hidden";
+            }
+          }
+          draw(null);
+          canvas.onmousemove = draw;
+          canvas.onmouseleave = ev => draw(null);
+        })
     }
   </script>
 {{ end }}

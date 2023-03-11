@@ -108,6 +108,40 @@ body {
   animation-play-state: paused;
 }
 
+#annotations-div {
+  position: absolute;
+  transition: opacity 1s;
+  z-index: 2;
+
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#annotations {
+  opacity: 0;
+  -webkit-transition: opacity 1.5s;
+  -moz-transition: opacity 1.5s;
+  transition: opacity 1.5s;
+}
+
+#annotations:hover {
+  opacity: 1;
+}
+
+#datestr {
+  pointer-events: none;
+  z-index: 3;
+}
+
+#annotations-tooltip {
+  pointer-events: none;
+  visibility: hidden;
+  z-index: 4;
+}
+
 @keyframes clickme {
   from {
     opacity: 1;
