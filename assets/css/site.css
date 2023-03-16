@@ -142,6 +142,10 @@ body {
   z-index: 4;
 }
 
+.search-ui {
+  z-index: 5;
+}
+
 @keyframes clickme {
   from {
     opacity: 1;
