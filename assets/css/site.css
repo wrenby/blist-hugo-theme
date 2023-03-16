@@ -120,25 +120,31 @@ body {
   height: 100%;
 }
 
-#annotations {
+#annotations-div {
   opacity: 0;
   -webkit-transition: opacity 1.5s;
   -moz-transition: opacity 1.5s;
   transition: opacity 1.5s;
 }
 
-#annotations:hover {
+#annotations-div:hover {
   opacity: 1;
+}
+
+#annotations-div:hover ~ #datestr {
+  opacity: 0;
 }
 
 #datestr {
   pointer-events: none;
   z-index: 3;
+  transition: opacity 1.5s
 }
 
 #annotations-tooltip {
   pointer-events: none;
   visibility: hidden;
+  white-space: nowrap;
   z-index: 4;
 }
 

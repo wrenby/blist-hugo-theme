@@ -139,17 +139,19 @@
       // this event will never fail on a term element, but it will also fire on definition-outer/inner elements and clog up the error console
       const obj_rect = term_elem.getBoundingClientRect();
       const tooltip_rect = tooltip.getBoundingClientRect();
+      const definition_rect = tooltip.firstElementChild.getBoundingClientRect();
+      console.log(tooltip);
 
-      let goalX = obj_rect.left + obj_rect.width/2 - tooltip_rect.width/2;
-      let goalY = obj_rect.top - tooltip_rect.height;
+      let goalX = obj_rect.left + obj_rect.width/2 - definition_rect.width/2;
+      let goalY = obj_rect.top - definition_rect.height;
       const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
-      goalX = Math.min(vw - tooltip_rect.width, Math.max(goalX, 0));
+      goalX = Math.min(vw - definition_rect.width, Math.max(goalX, 0));
       if (goalY < 0)
         goalY = obj_rect.bottom;
 
       tooltip.style.top = (goalY + window.pageYOffset) + "px";
-      tooltip.style.left = (goalX + window.pageXOffset) + "px";
+      tooltip.style.left = (goalX + window.pageXOffset) - (tooltip_rect.width - definition_rect.width) / 2 + "px";
     }
   }
 </script>
