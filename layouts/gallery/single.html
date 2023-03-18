@@ -4,7 +4,7 @@
 
   {{ with $image := resources.GetMatch .Params.featured_image }}
     <div class="relative max-w-5xl mx-auto px-4">
-      <a href="{{ $image.RelPermalink }}">
+      <a data-href="{{ $image.RelPermalink }}" id="img_anchor">
         {{ $small := $image.Resize "512x jpg q90 Lanczos" }}
         {{ $medium := $image.Resize "768x jpg q90 Lanczos" }}
         {{ $large := $image.Resize "1024x jpg q90 Lanczos" }}
@@ -14,12 +14,12 @@
               {{- with $small.RelPermalink -}}, {{.}} 512w{{- end -}}
               {{- with $medium.RelPermalink -}}, {{.}} 768w{{- end -}}
               {{- with $large.RelPermalink -}}, {{.}} 1024w{{- end -}}"
-            src="{{ $large.RelPermalink }}"
+            src="{{ $image.RelPermalink }}"
             sizes="100vw"
             alt="{{ $.Params.title }}"
             class="rounded-lg shadow-sm w-full object-contain"
             id="featured_image" />
-          <div class="absolute text-xl prose-dark" id="clickme">
+          <div class="absolute text-xl prose-dark flex-col" id="clickme">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hand-click" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
               <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"></path>
@@ -31,7 +31,11 @@
               <path d="M14 3l1 -1"></path>
               <path d="M15 6h1"></path>
             </svg>
-            Click for full-resolution image
+            <div id="clickme-text" class="text-center">
+              Click for full-resolution image
+              <br />
+              Hover for annotations
+            </div>
           </div>
           <div class="absolute" id="annotations-div">
             {{- $json_file := relURL (printf "annotations/%s.json" $.File.BaseFileName) -}}
@@ -111,8 +115,21 @@
   {{- partialCached "social.html" . -}}
 
   <script>
+    const img_anchor = document.getElementById("img_anchor");
+    if (window.matchMedia( "(hover: none)" ).matches) {
+      const clickme_text = document.getElementById("clickme-text");
+
+      clickme_text.innerHTML = "Long press for full-resolution image<br />Tap for annotations";
+      img_anchor.oncontextmenu = (ev) => {
+        ev.preventDefault();
+        window.open(img_anchor.getAttribute("data-href"));
+      }
+
+    } else {
+      img_anchor.setAttribute("href", img_anchor.getAttribute("data-href"));
+    }
     // placing this in the bottom means these elements have both been loaded into the dom by now
-    const img = document.getElementById("featured_image");
+    let img = document.getElementById("featured_image");
     const clickme = document.getElementById("clickme");
     if (img && clickme) {
       // ordering these this way means it might trigger twice in quick succession, but that has no effect
@@ -257,8 +274,8 @@
             }
           }
           draw(null);
-          canvas.onmousemove = draw;
-          canvas.onmouseleave = ev => draw(null);
+          img.onmousemove = draw;
+          img.onmouseleave = ev => draw(null);
         })
     }
   </script>
