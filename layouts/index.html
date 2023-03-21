@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<title>Redirecting to /gallery</title>
-<meta http-equiv="refresh" content="0; URL=/gallery">
-<link rel="canonical" href="/gallery">
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Redirecting to /{{ $.Site.Params.frontBundle }}</title>
+        <meta http-equiv="refresh" content="0; URL=/{{ $.Site.Params.frontBundle }}">
+        <link rel="canonical" href="/{{ $.Site.Params.frontBundle }}">
+    </head>
+</html>

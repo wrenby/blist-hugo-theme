@@ -1,0 +1,10 @@
+{{- if .Page.Scratch.Get "citation_count" -}}
+  {{- .Page.Scratch.Add "citation_count" 1 -}}
+{{- else -}}
+  {{- .Page.Scratch.Set "citation_count" 1 -}}
+{{- end -}}
+{{- if gt (len .Params) 0 -}}
+<sup><a href="{{ index .Params 0 }}">[{{- .Page.Scratch.Get "citation_count" -}}]</a></sup>
+{{- else -}}
+  {{- errorf "Citation shortcode requires a parameter to know where to link to" -}}
+{{- end -}}
