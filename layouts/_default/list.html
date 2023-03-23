@@ -3,11 +3,30 @@
   <h1 class="container px-6 pt-6 mx-auto text-3xl font-bold">{{ .Title }}</h1>
 
   {{ $paginator := .Paginate .Pages.ByDate.Reverse 12 }}
-  <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
-    {{ range $paginator.Pages }}
-      {{- partial "blog-card.html" . -}}
-    {{ end }}
-  </div>
+  {{ if .Site.Params.infiniteScroll }}
+    <div class="pagination__container container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8"
+    data-infinite-scroll='{ "path": ".pagination__next", "append": ".blog-card", "history": "true", "hideNav": ".pagination", "status": ".page-load-status", "history": "false" }'>
+      {{ range $paginator.Pages }}
+        {{- partial "blog-card.html" . -}}
+      {{ end }}
+    </div>
+    <div class="page-load-status hidden">
+      <div class="infinite-scroll-request loader-ellipse">
+        <span class="loader-ellipse__dot"></span>
+        <span class="loader-ellipse__dot"></span>
+        <span class="loader-ellipse__dot"></span>
+        <span class="loader-ellipse__dot"></span>
+      </div>
+      <p class="infinite-scroll-last hidden text-center text-gray-500">End of content</p>
+      <p class="infinite-scroll-error hidden text-center text-gray-500">Error loading next page</p>
+    </div>
+  {{ else }}
+    <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
+      {{ range $paginator.Pages }}
+        {{- partial "blog-card.html" . -}}
+      {{ end }}
+    </div>
+  {{ end }}
 
   {{- partial "pagination.html" . -}}
 

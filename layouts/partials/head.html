@@ -53,6 +53,14 @@
 
   {{ end }}
 
+  {{ if .Site.Params.infiniteScroll }}
+    <script
+      src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"
+      integrity="sha384-+83ma0Y8eQWtTIhmx2gjueu3BY0XU4gX4EkL12u3M+WPc4SDskKaIpIL7QiB8ikh"
+      crossorigin="anonymous"
+    ></script>
+  {{ end }}
+
   {{ range .AlternativeOutputFormats -}}
     {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
   {{ end -}}

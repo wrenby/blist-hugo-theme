@@ -10,3 +10,53 @@
 .page-item.disabled {
   @apply text-gray-400 hover:bg-transparent hover:text-gray-400 cursor-not-allowed;
 }
+
+.loader-ellipse {
+  font-size: 15px; /* change size here */
+  position: relative;
+  width: 4em;
+  height: 1em;
+  margin: 10px auto;
+}
+
+.loader-ellipse__dot {
+  display: block;
+  width: 1em;
+  height: 1em;
+  border-radius: 0.5em;
+  @apply bg-gray-800 dark:bg-gray-300;
+  position: absolute;
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite;
+}
+
+.loader-ellipse__dot:nth-child(1),
+.loader-ellipse__dot:nth-child(2) {
+  left: 0;
+}
+.loader-ellipse__dot:nth-child(3) { left: 2em; }
+.loader-ellipse__dot:nth-child(4) { left: 4em; }
+
+@keyframes reveal {
+  from { transform: scale(0.001); }
+  to { transform: scale(1); }
+}
+
+@keyframes slide {
+  to { transform: translateX(2em) }
+}
+
+.loader-ellipse__dot:nth-child(1) {
+  animation-name: reveal;
+}
+
+.loader-ellipse__dot:nth-child(2),
+.loader-ellipse__dot:nth-child(3) {
+  animation-name: slide;
+}
+
+.loader-ellipse__dot:nth-child(4) {
+  animation-name: reveal;
+  animation-direction: reverse;
+}
