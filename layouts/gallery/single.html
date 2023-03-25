@@ -2,6 +2,10 @@
   {{ $lastmodstr := (partial "date.html" (dict "date" .Lastmod "language" $.Page.Language "format" "long")) }}
   {{ $datestr := (partial "date.html" (dict "date" .Date "language" $.Page.Language "format" "long")) }}
 
+  {{ with $annotations := $.Page.Resources.GetMatch "annotations.json" }}
+    {{ $.Scratch.Set "annotations" $annotations }}
+  {{ end }}
+
   {{ with $image := resources.GetMatch .Params.featured_image }}
     <div class="relative max-w-5xl mx-auto px-4">
       <a data-href="{{ $image.RelPermalink }}" id="img_anchor">
@@ -33,15 +37,19 @@
             </svg>
             <div id="clickme-text" class="text-center">
               Click for full-resolution image
-              <br />
-              Hover for annotations
+              {{ if $.Scratch.Get "annotations" }}
+                <br />
+                Hover for annotations
+              {{ end }}
             </div>
           </div>
-          <div class="absolute" id="annotations-div">
-            {{- $json_file := relURL (printf "annotations/%s.json" $.File.BaseFileName) -}}
-            <canvas id="annotations" role="presentation" data-json="{{ $json_file }}" data-width = "{{ $image.Width }}" data-height="{{ $image.Height }}"></canvas>
-            <div id="annotations-tooltip" class="absolute bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5 rounded-md"></div>
-          </div>
+          {{ if $.Scratch.Get "annotations" }}
+            <div class="absolute" id="annotations-div">
+              {{- $json_file := $.Scratch.Get "annotations" -}}
+              <canvas id="annotations" role="presentation" data-json='{{ $.Scratch.Get "annotations" }}' data-width = "{{ $image.Width }}" data-height="{{ $image.Height }}"></canvas>
+              <div id="annotations-tooltip" class="absolute bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5 rounded-md"></div>
+            </div>
+          {{ end }}
           <div id="datestr" class="absolute top-4 right-4 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5">
             📷 {{ $datestr }}
           </div>
@@ -119,7 +127,12 @@
     if (window.matchMedia( "(hover: none)" ).matches) {
       const clickme_text = document.getElementById("clickme-text");
 
-      clickme_text.innerHTML = "Long press for full-resolution image<br />Tap for annotations";
+      if (document.getElementById("annotations_div")) {
+        clickme_text.innerHTML = "Long press for full-resolution image<br />Tap for annotations";
+      } else {
+        // element is removed from rendered page template because no annotations were found at build time
+        clickme_text.innerHTML = "Long press for full-resolution image";
+      }
       img_anchor.oncontextmenu = (ev) => {
         ev.preventDefault();
         window.open(img_anchor.getAttribute("data-href"));

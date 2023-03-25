@@ -1,12 +1,11 @@
 <div class="p-2 blog-card">
 <a href="{{ .Permalink }}">
-  {{ $image := "" }}
   {{ if isset .Params "thumbnail" }}
-    {{ $image = resources.GetMatch .Params.thumbnail }}
+    {{ $.Scratch.Set "image" (resources.GetMatch .Params.thumbnail) }}
   {{ else if isset .Params "featured_image" }}
-    {{ $image = resources.GetMatch .Params.featured_image }}
+    {{ $.Scratch.Set "image" (resources.GetMatch .Params.featured_image) }}
   {{ end }}
-  {{ if ne $image "" }}
+  {{ with $image := $.Scratch.Get "image" }}
     {{ $tiny_jpg := $image.Resize "128x jpg q70 Lanczos" }}
     {{ $small_jpg := $image.Resize "256x jpg q70 Lanczos" }}
     {{ $medium_jpg := $image.Resize "410x jpg q70 Lanczos" }}
@@ -28,7 +27,7 @@
           class="rounded-lg shadow-sm w-full h-52 object-cover" />
       </picture>
       <div class="absolute top-4 right-4 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white text-sm px-2 py-0.5">
-        📷 {{ partial "date.html" (dict "date" .Date "language" $.Page.Language "format" "short") }}
+        📷 {{ partial "date.html" (dict "date" $.Date "language" $.Page.Language "format" "short") }}
       </div>
     </div>
   {{ end }}
