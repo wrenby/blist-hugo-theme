@@ -120,6 +120,8 @@
     {{ .Content }}
   </article>
 
+  {{- partial "comments.html" . -}}
+
   {{- partialCached "social.html" . -}}
 
   <script>

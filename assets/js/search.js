@@ -19,7 +19,7 @@ document.querySelector('.close-search').addEventListener('click', closeSearch);
 
 function closeSearch() {
   document.querySelector('.search-ui').classList.add("hidden");
-  document.activeElement.blur(); // remove focus from search box 
+  document.activeElement.blur(); // remove focus from search box
   searchVisible = false; // search not visible
   searchResultsHeading.classList.add('hidden');
 }
@@ -134,7 +134,7 @@ function loadSearch() {
 
 
 // ==========================================
-// using the index we loaded on CMD-/, run 
+// using the index we loaded on CMD-/, run
 // a search query (for "term") every time a letter is typed
 // in the search box
 //
@@ -150,7 +150,7 @@ function executeSearch(term) {
     } else {
       noResults.classList.add('hidden')
     }
-  } else { // build our html 
+  } else { // build our html
     noResults.classList.add('hidden')
     if (term !== "") {
       searchResultsHeading.classList.remove('hidden');
@@ -159,7 +159,7 @@ function executeSearch(term) {
     for (let item in results.slice(0, 5)) { // only show first 5 results
       const title = '<div class="text-2xl mb-2 font-bold">' + results[item].item.title + '</div>';
       const date = results[item].item.date ? '<div><em class="px-4">' + new Date(results[item].item.date).toUTCString().substring(0, 16) + '</em></div>' : '';
-      const contents = '<div class="prose px-4">' + results[item].item.contents + '</div>';
+      const contents = '<div class="prose dark:prose-dark px-4">' + results[item].item.contents + '</div>';
 
       searchitems = searchitems + '<li><a class="block mb-2 px-4 py-2 rounded pb-2 border-b border-gray-200 dark:border-gray-600 focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none" href="' + results[item].item.permalink + '" tabindex="0">' + title + '</a>' + date + contents + '</li>';
     }
