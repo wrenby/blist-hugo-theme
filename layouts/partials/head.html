@@ -53,7 +53,12 @@
 
   {{ end }}
 
-  {{ if .Site.Params.infiniteScroll }}
+  {{ if isset .Page.Params "infinitescroll" }}
+    {{ .Scratch.Set "enableInfiniteScroll" .Page.Params.infiniteScroll }}
+  {{ else }}
+    {{ .Scratch.Set "enableInfiniteScroll" .Site.Params.infiniteScroll }}
+  {{ end }}
+  {{ if and (.Scratch.Get "enableInfiniteScroll") (eq .Page.Kind "section") }}
     <script
       src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"
       integrity="sha384-+83ma0Y8eQWtTIhmx2gjueu3BY0XU4gX4EkL12u3M+WPc4SDskKaIpIL7QiB8ikh"

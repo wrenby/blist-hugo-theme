@@ -134,12 +134,12 @@
   }
 
   function position_tooltip(term_elem) {
-    let tooltip = term_elem.firstElementChild;
+    let tooltip = term_elem.lastElementChild;
     if (tooltip) {
       // this event will never fail on a term element, but it will also fire on definition-outer/inner elements and clog up the error console
       const obj_rect = term_elem.getBoundingClientRect();
       const tooltip_rect = tooltip.getBoundingClientRect();
-      const definition_rect = tooltip.firstElementChild.getBoundingClientRect();
+      const definition_rect = tooltip.lastElementChild.getBoundingClientRect();
 
       let goalX = obj_rect.left + obj_rect.width/2 - definition_rect.width/2;
       let goalY = obj_rect.top - definition_rect.height;
