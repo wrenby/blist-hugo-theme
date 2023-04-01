@@ -12,7 +12,8 @@ Blist is a clean and fast blog theme for your Hugo site.
 
 - Responsive content / Mobile-optimized
 - Blog pagination
-- Text Search
+- Customizable Text Search
+- Table of contents
 - Social links
 - Code highlighting
 - Color customization
@@ -20,6 +21,10 @@ Blist is a clean and fast blog theme for your Hugo site.
 - Fast performance
 - SEO optimized
 - i18n support
+- Support comments systems
+  - Disqus (hugo native)
+  - giscus
+  - utterances
 
 ## Preview
 
@@ -47,7 +52,7 @@ git submodule add https://github.com/apvarun/blist-hugo-theme.git themes/blist
 
 Blist theme ships with an fully configured example site. For a quick preview:
 
-Copy the `package.json` file from `themes/showcase` folder to your hugo website root folder, and run `npm install`.
+Copy the `package.json` file from `themes/blist` folder to your hugo website root folder, and run `npm install`.
 
 ```sh
 cd themes/blist/exampleSite/
@@ -66,11 +71,14 @@ Then visit `http://localhost:1313/` in your browser to view the example site.
 
 Make sure to commit the above changes to your repository.
 
+## Publish your website
+
 When deploying to services like Netlify or Vercel, use the following command for building your site:
 
 ```sh
-npm i && hugo -D --gc
+npm i && HUGO_ENVIRONMENT=production hugo --gc
 ```
+The parameter `HUGO_ENVIRONMENT=production` enables the execution of css purging.
 
 ## Add content
 
@@ -147,7 +155,42 @@ If you have a question, please [open an issue](https://github.com/apvarun/blist-
 
 Contributions, issues, and feature requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
-<table><tr><td align="center"><a href="https://github.com/apvarun"><img alt="apvarun" src="https://avatars.githubusercontent.com/u/8411309?v=4" width="117" /><br />apvarun</a></td><td align="center"><a href="https://github.com/engel-b"><img alt="engel-b" src="https://avatars.githubusercontent.com/u/5812810?v=4" width="117" /><br />engel-b</a></td><td align="center"><a href="https://github.com/lucab85"><img alt="lucab85" src="https://avatars.githubusercontent.com/u/24267107?v=4" width="117" /><br />lucab85</a></td></tr></table>
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/apvarun"><img alt="apvarun"
+          src="https://avatars.githubusercontent.com/u/8411309?v=4" width="117" /><br />apvarun</a></td>
+    <td align="center"><a href="https://github.com/Ravinou"><img alt="Ravinou"
+          src="https://avatars.githubusercontent.com/u/39600829?v=4" width="117" /><br />Ravinou</a></td>
+    <td align="center"><a href="https://github.com/engel-b"><img alt="engel-b"
+          src="https://avatars.githubusercontent.com/u/5812810?v=4" width="117" /><br />engel-b</a></td>
+    <td align="center"><a href="https://github.com/chris-gillatt"><img alt="chris-gillatt"
+          src="https://avatars.githubusercontent.com/u/9963006?v=4" width="117" /><br />chris-gillatt</a></td>
+    <td align="center"><a href="https://github.com/apps/dependabot"><img alt="dependabot[bot]"
+          src="https://avatars.githubusercontent.com/in/29110?v=4" width="117" /><br />dependabot[bot]</a></td>
+    <td align="center"><a href="https://github.com/xLexip"><img alt="xLexip"
+          src="https://avatars.githubusercontent.com/u/46321162?v=4" width="117" /><br />xLexip</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/AntoineSoetewey"><img alt="AntoineSoetewey"
+          src="https://avatars.githubusercontent.com/u/17910063?v=4" width="117" /><br />AntoineSoetewey</a></td>
+    <td align="center"><a href="https://github.com/chiragksharma"><img alt="chiragksharma"
+          src="https://avatars.githubusercontent.com/u/74889769?v=4" width="117" /><br />chiragksharma</a></td>
+    <td align="center"><a href="https://github.com/dlecan"><img alt="dlecan"
+          src="https://avatars.githubusercontent.com/u/586631?v=4" width="117" /><br />dlecan</a></td>
+    <td align="center"><a href="https://github.com/jpiaskowski"><img alt="jpiaskowski"
+          src="https://avatars.githubusercontent.com/u/8420943?v=4" width="117" /><br />jpiaskowski</a></td>
+    <td align="center"><a href="https://github.com/lucab85"><img alt="lucab85"
+          src="https://avatars.githubusercontent.com/u/24267107?v=4" width="117" /><br />lucab85</a></td>
+    <td align="center"><a href="https://github.com/Marty"><img alt="Marty"
+          src="https://avatars.githubusercontent.com/u/100658?v=4" width="117" /><br />Marty</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/ernavdeepkr"><img alt="ernavdeepkr"
+          src="https://avatars.githubusercontent.com/u/50796185?v=4" width="117" /><br />ernavdeepkr</a></td>
+    <td align="center"><a href="https://github.com/roypeter"><img alt="roypeter"
+          src="https://avatars.githubusercontent.com/u/16620459?v=4" width="117" /><br />roypeter</a></td>
+  </tr>
+</table>
 
 ## License
 

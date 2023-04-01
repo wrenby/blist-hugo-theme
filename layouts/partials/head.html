@@ -5,7 +5,7 @@
   <link rel="icon" href="{{ if (isset .Site.Params "favicon") }}{{ .Site.Params.favicon }}{{ else }}/favicon.ico{{ end }}">
 
   <title>
-    {{ block "title" . }} {{- if .IsHome -}} Home -{{- else -}} {{- .Title }} -{{- end }} {{ .Site.Title -}} {{ end }}
+  {{ if not .IsHome }}{{ .Title }} - {{ end }}{{ site.Title }}
   </title>
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{if .IsPage}}{{ .Summary }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end -}}" />
   {{- if .Keywords }}
@@ -73,6 +73,10 @@
   {{ partial "opengraph.html" . }}
   {{ partial "twitter_cards.html" . }}
   {{ template "_internal/schema.html" . }}
+
+  {{ if gt (len .Site.Languages) 1}}
+  <meta name="lang" content="{{ .Site.Language }}" />
+  {{ end }}
 
   <script>
     // to prevent Firefox flash of unstyled content, this must be here
