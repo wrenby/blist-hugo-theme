@@ -2,10 +2,17 @@
 
   <h1 class="container px-6 pt-6 mx-auto text-3xl font-bold">{{ .Title }}</h1>
 
-  {{ $paginator := .Paginate .Pages.ByDate.Reverse 12 }}
+  {{ if isset .Params "paginate" }}
+    {{ .Scratch.Set "paginate" .Params.paginate }}
+  {{ else if isset .Site.Params "paginate" }}
+    {{ .Scratch.Set "paginate" .Site.Params.paginate }}
+  {{ else }}
+    {{ .Scratch.Set "paginate" 12 }}
+  {{ end }}
+  {{ $paginator := .Paginate (cond (in (slice "tags" "categories") .Page.Type) .Pages.ByTitle .Pages.ByDate.Reverse) (.Scratch.Get "paginate") }}
   {{ if .Site.Params.infiniteScroll }}
     <div class="pagination__container container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8"
-    data-infinite-scroll='{ "path": ".pagination__next", "append": ".blog-card", "history": "true", "hideNav": ".pagination", "status": ".page-load-status", "history": "false" }'>
+    data-infinite-scroll='{ "path": ".pagination__next", "prefill": "true", "append": ".blog-card", "history": "true", "hideNav": ".pagination", "status": ".page-load-status", "history": "false" }'>
       {{ range $paginator.Pages }}
         {{- partial "blog-card.html" . -}}
       {{ end }}
