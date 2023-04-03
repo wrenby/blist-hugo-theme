@@ -120,10 +120,12 @@ function loadSearch() {
       shouldSort: true,
       location: 0,
       distance: 100,
-      threshold: 0.4,
+      ignoreLocation: true,
+      threshold: 0.3,
       minMatchCharLength: 2,
       keys: [
         'title',
+        'tags',
         'permalink',
         'contents'
       ]
@@ -159,7 +161,18 @@ function executeSearch(term) {
     for (let item in results.slice(0, 5)) { // only show first 5 results
       const title = '<div class="text-2xl mb-2 font-bold">' + results[item].item.title + '</div>';
       const date = results[item].item.date ? '<div><em class="px-4">' + new Date(results[item].item.date).toUTCString().substring(0, 16) + '</em></div>' : '';
-      const contents = '<div class="prose dark:prose-dark px-4">' + results[item].item.contents + '</div>';
+
+      let paragraphs = results[item].item.contents.split("</p>");
+      let result_preview = paragraphs[0]; // WARNING: DOES NOT CONTAIN CLOSING </p> TAG AT THIS POINT
+      for (let [index, p] of paragraphs.entries()) {
+        let i = p.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').indexOf(term.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, ''));
+        if (i != -1) {
+          result_preview = p.slice(0, i) + '<mark>' + p.slice(i, i + term.length) + '</mark>' + p.slice(i + term.length);
+          break;
+        }
+      }
+
+      const contents = '<div class="prose dark:prose-dark px-4">' + result_preview + '</p></div>';
 
       searchitems = searchitems + '<li><a class="block mb-2 px-4 py-2 rounded pb-2 border-b border-gray-200 dark:border-gray-600 focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none" href="' + results[item].item.permalink + '" tabindex="0">' + title + '</a>' + date + contents + '</li>';
     }
